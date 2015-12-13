@@ -1,0 +1,11 @@
+<ion-view view-title='Feed'>
+	<ion-content>
+		<ion-list>
+		  <ion-item ng-repeat="item in items | unique:'county' | orderBy:'county'" class="item item-text-wrap item-icon-right"
+		  ng-click="showItem(item)">
+		    {{item.county}}
+		      <i class="icon ion-chevron-right"></i>
+		  </ion-item>
+		</ion-list>
+	</ion-content>
+</ion-view>

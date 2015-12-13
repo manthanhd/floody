@@ -1,0 +1,10 @@
+<ion-view view-title='{{item.county}}'>
+	<ion-content>
+		<ion-list>
+		  <ion-item ng-repeat="item in items | filter:item.county" class="item item-text-wrap item-icon-right">
+	    	{{item.label}}
+	    	<i class="icon ion-chevron-right"></i>
+		  </ion-item>
+		</ion-list>
+	</ion-content>
+</ion-view>
