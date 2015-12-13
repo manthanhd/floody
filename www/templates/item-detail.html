@@ -1,15 +1,19 @@
-<ion-view view-title='{{item.label}}'>
-	<ion-content>
-		<div class="card">
-		  <div class="item item-divider">
-		    {{item.eaAreaName}}
-		  </div>
-		  <div class="item item-text-wrap">
-		    {{item.description}}
-		  </div>
-		  <div class="item item-divider">
-		    <i class="icon ion-ios-telephone"></i> {{item.quickDialNumber}}
-		  </div>
-		</div>
-	</ion-content>
+<ion-view view-title='{{item.description}}'>
+  <ion-content>
+    <div class="card">
+      <div class="item item-divider">
+        {{item.eaAreaName}} - {{item.eaRegionName}}
+      </div>
+      <div class="item item-text-wrap">
+        <span ng-if="item.message">{{item.message}}</span>
+        <span ng-if="!item.message || item.message == ''"><i>no message</i></span>
+      </div>
+      <div class="item item-divider">
+        <i class="icon ion-ios-telephone"></i> {{item.floodArea.quickDialNumber}}
+      </div>
+    </div>
+    <div class="row text-center">
+      This is a level&nbsp;<b>{{item.severityLevel}} {{item.severity}}</b>
+    </div>
+  </ion-content>
 </ion-view>
