@@ -1,7 +1,24 @@
 <ion-view view-title='Counties'>
+  <!--Search bar header button-->
+  <ion-nav-buttons side="secondary">
+    <button class="button icon ion-search" ng-if="!searchBar" ng-click="showSearch()">
+    </button>
+    <button class="button icon ion-close" ng-if="searchBar" ng-click="hideSearch()">
+    </button>
+  </ion-nav-buttons>
+
+  <!--Content-->
   <ion-content>
+    <!--Search bar textbox-->
+    <div class="bar bar-header item-input-inset" ng-if="searchBar == true">
+      <label class="item-input-wrapper">
+        <i class="icon ion-ios-search placeholder-icon"></i>
+        <input type="search" placeholder="Search" ng-model="$parent.searchString" focus-me="searchBar">
+      </label>
+    </div>
+
     <ion-list>
-      <ion-item ng-repeat="item in items | unique:'floodArea.county' | orderBy:'floodArea.county'"
+      <ion-item ng-repeat="item in items | unique:'floodArea.county' | orderBy:'floodArea.county' | filter:{floodArea:{county:searchString}}"
                 class="item item-text-wrap item-icon-right"
                 ng-click="showItem(item)">
         {{item.floodArea.county}}
