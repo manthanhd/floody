@@ -41,7 +41,7 @@ angular.module('starter', ['ionic'])
         url: '/showItem',
         controller: 'ItemDetailController',
         templateUrl: 'templates/item-detail.html'
-      })
+      });
   })
 
   .filter('unique', function () {
@@ -57,7 +57,7 @@ angular.module('starter', ['ionic'])
 
         var extractValueToCompare = function (item) {
           if (angular.isObject(item) && angular.isString(filterOn)) {
-            if(filterOn.indexOf('.') !== -1) {
+            if (filterOn.indexOf('.') !== -1) {
               var res = filterOn.split(".");
               return item[res[0]][res[1]];
             }
@@ -85,5 +85,20 @@ angular.module('starter', ['ionic'])
         items = newItems;
       }
       return items;
+    };
+  })
+
+  .directive('focusMe', function ($timeout) {
+    return {
+      link: function (scope, element, attrs) {
+        scope.$watch(attrs.focusMe, function (value) {
+          if (value === true) {
+            $timeout(function () {
+              element[0].focus();
+              scope[attrs.focusMe] = false;
+            });
+          }
+        });
+      }
     };
   });
