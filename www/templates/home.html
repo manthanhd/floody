@@ -1,5 +1,8 @@
 <ion-view view-title='Counties'>
   <!--Search bar header button-->
+  <ion-nav-buttons side="primary">
+    <button ng-click="openPopover($event)" class="button icon ion-grid"></button>
+  </ion-nav-buttons>
   <ion-nav-buttons side="secondary">
     <button class="button icon ion-search" ng-if="!searchBar" ng-click="showSearch()">
     </button>

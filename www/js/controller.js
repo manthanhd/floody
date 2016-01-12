@@ -1,10 +1,10 @@
 angular.module('starter')
-  .controller('HomeController', function ($scope, $http, $state) {
-    $scope.showSearch = function() {
+  .controller('HomeController', function ($scope, $http, $state, $ionicPopover) {
+    $scope.showSearch = function () {
       $scope.searchBar = true;
     };
 
-    $scope.hideSearch = function() {
+    $scope.hideSearch = function () {
       $scope.searchBar = false;
       $scope.searchString = undefined;
     };
@@ -16,14 +16,27 @@ angular.module('starter')
       $scope.$parent.item = item;
       $state.go("county");
     };
+
+    $ionicPopover.fromTemplateUrl('templates/popover-menu.html', {
+      scope: $scope
+    }).then(function(popover) {
+      $scope.popover = popover;
+    });
+
+    $scope.openPopover = function($event) {
+      $scope.popover.show($event);
+    };
+    $scope.closePopover = function() {
+      $scope.popover.hide();
+    };
   })
 
   .controller('CountyStationsController', function ($scope, $http, $state) {
-    $scope.showSearch = function() {
+    $scope.showSearch = function () {
       $scope.searchBar = true;
     };
 
-    $scope.hideSearch = function() {
+    $scope.hideSearch = function () {
       $scope.searchBar = false;
       $scope.searchString = undefined;
     };
@@ -37,18 +50,22 @@ angular.module('starter')
 
   .controller('ItemDetailController', function ($scope, $http, $stateParams) {
     var itemIdLink = $scope.$parent.item["@id"];
-    $http.get(itemIdLink).then(function(data) {
+    $http.get(itemIdLink).then(function (data) {
       $scope.item = data.data.items;
 
-      switch($scope.item.severityLevel) {
+      switch ($scope.item.severityLevel) {
         case 1:
-              $scope.explaination = "Severe flooding. Danger to life."; break;
+          $scope.explaination = "Severe flooding. Danger to life.";
+          break;
         case 2:
-              $scope.explaination = "Flooding is expected. Immediate action required"; break;
+          $scope.explaination = "Flooding is expected. Immediate action required";
+          break;
         case 3:
-              $scope.explaination = "Flooding is possible. Be prepared"; break;
+          $scope.explaination = "Flooding is possible. Be prepared";
+          break;
         case 4:
-              $scope.explaination = "Flood warnings and flood alerts that have been removed in the last 24 hours."; break;
+          $scope.explaination = "Flood warnings and flood alerts that have been removed in the last 24 hours.";
+          break;
       }
     });
   });
