@@ -20,12 +20,18 @@
       </label>
     </div>
 
-    <ion-list>
+    <ion-list can-swipe="true">
       <ion-item ng-repeat="item in items | unique:'floodArea.county' | orderBy:'floodArea.county' | filter:{floodArea:{county:searchString}}"
-                class="item item-text-wrap item-icon-right"
+                class="item item-text-wrap"
                 ng-click="showItem(item)">
         {{item.floodArea.county}}
         <i class="icon ion-chevron-right"></i>
+        <ion-option-button class="button-positive icon ion-pin"
+                           ng-click="bookmarkCounty(item.floodArea.county)" ng-show="!isBookmarked(item.floodArea.county)">
+        </ion-option-button>
+        <ion-option-button class="button-assertive icon ion-pin"
+                           ng-click="removeBookmark(item.floodArea.county)" ng-show="isBookmarked(item.floodArea.county)">
+        </ion-option-button>
       </ion-item>
     </ion-list>
   </ion-content>
