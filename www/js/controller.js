@@ -1,5 +1,5 @@
 angular.module('starter')
-  .controller('HomeController', function ($scope, $http, $state, $ionicPopover, $ionicListDelegate, ionicToast) {
+  .controller('CountiesController', function ($scope, $rootScope, $http, $state, $ionicPopover, $ionicListDelegate, ionicToast, BookmarkService) {
     $scope.showSearch = function () {
       $scope.searchBar = true;
     };
@@ -15,95 +15,29 @@ angular.module('starter')
 
     $scope.showItem = function (item) {
       $scope.$parent.item = item;
-      $state.go("county");
+      $state.go("tab.county");
     };
 
     $scope.isBookmarked = function(county) {
-      var bookmarks;
-      var storedBookmarks = window.localStorage["countyBookmarks"];
-      if(storedBookmarks) {
-        bookmarks = JSON.parse(storedBookmarks);
-      }
-
-      if(!bookmarks) {
-        bookmarks = [];
-        $scope.$parent.countyBookmarks = bookmarks;
-      }
-
-      for(var i = 0; i < bookmarks.length; i++) {
-        var bookmark = bookmarks[i];
-        if(bookmark === county) {
-          $ionicListDelegate.closeOptionButtons();
-          return i;
-        }
-      }
-
-      return undefined;
+      return BookmarkService.isBookmarked(county);
     };
 
     $scope.getBookmarks = function() {
-      var bookmarks;
-      var storedBookmarks = window.localStorage["countyBookmarks"];
-      if(storedBookmarks) {
-        bookmarks = JSON.parse(storedBookmarks);
-      }
-
-      if(!bookmarks) {
-        bookmarks = [];
-      }
-
-      return bookmarks;
-    };
-
-    $scope.persistBookmarks = function(bookmarks) {
-      $scope.$parent.countyBookmarks = bookmarks;
-
-      if(!bookmarks) {
-        window.localStorage["countyBookmarks"] = undefined;
-        return;
-      }
-
-      window.localStorage["countyBookmarks"] = JSON.stringify(bookmarks);
+      return BookmarkService.getBookmarks();
     };
 
     $scope.bookmarkCounty = function(county) {
-      var bookmarks;
-      var storedBookmarks = window.localStorage["countyBookmarks"];
-      if(storedBookmarks) {
-        bookmarks = JSON.parse(storedBookmarks);
-      }
-
-      if(!bookmarks) {
-        bookmarks = [];
-        $scope.$parent.countyBookmarks = bookmarks;
-      }
-
-      for(var i = 0; i < bookmarks.length; i++) {
-        var bookmark = bookmarks[i];
-        if(bookmark === county) {
-          $ionicListDelegate.closeOptionButtons();
-          return;
-        }
-      }
-
-      bookmarks.push(county);
-      $scope.$parent.countyBookmarks = bookmarks;
-      window.localStorage["countyBookmarks"] = JSON.stringify(bookmarks);
+      BookmarkService.bookmark(county);
+      $rootScope.$broadcast("bookmark:add");
       $ionicListDelegate.closeOptionButtons();
-      ionicToast.show(county + " added to bookmarks.", "bottom", false, 2500);
+      ionicToast.show("Watch set on " + county, "bottom", false, 2500);
     };
 
     $scope.removeBookmark = function(county) {
-      var location = $scope.isBookmarked(county);
-      if(!location) {
-        return;
-      }
-
-      var bookmarks = $scope.getBookmarks();
-      bookmarks.splice(location, 1);
-      $scope.persistBookmarks(bookmarks);
-      console.log(bookmarks);
-      ionicToast.show(county + " removed from bookmarks.", "bottom", false, 2500);
+      BookmarkService.removeBookmark(county);
+      $ionicListDelegate.closeOptionButtons();
+      $rootScope.$broadcast("bookmark:remove");
+      ionicToast.show("Watch removed from " + county, "bottom", false, 2500);
     };
 
     $ionicPopover.fromTemplateUrl('templates/popover-menu.html', {
@@ -133,7 +67,7 @@ angular.module('starter')
     $scope.item = $scope.$parent.item;
     $scope.showItem = function (item) {
       $scope.$parent.item = item;
-      $state.go("showItem");
+      $state.go("tab.showItem");
     }
   })
 
@@ -157,4 +91,42 @@ angular.module('starter')
           break;
       }
     });
+  })
+
+  .controller('NearMeController', function($scope, $http) {
+
+  })
+
+  .controller('TabsController', function($scope, $http) {
+
+  })
+
+  .controller('BookmarksController', function($scope, $rootScope, $state, $ionicListDelegate, ionicToast, BookmarkService) {
+
+    $scope.refreshBookmarks = function() {
+      $scope.items = BookmarkService.getBookmarks();
+    };
+
+    $scope.removeBookmark = function(county) {
+      BookmarkService.removeBookmark(county);
+      $scope.items = BookmarkService.getBookmarks();
+      $ionicListDelegate.closeOptionButtons();
+      ionicToast.show(county + " removed from bookmarks.", "bottom", false, 2500);
+    };
+
+    $scope.$on("bookmark:add", function(event) {
+      console.log("Add event happened!");
+      $scope.refreshBookmarks();
+    });
+
+    $scope.$on("bookmark:remove", function(event) {
+      console.log("Remove event happened!");
+      $scope.refreshBookmarks();
+    });
+
+    $scope.refreshBookmarks();
+
+    if(!$scope.items || $scope.items.length == 0) {
+      return $state.go('tab.counties');
+    }
   });

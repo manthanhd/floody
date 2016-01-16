@@ -1,4 +1,5 @@
 <ion-view view-title='Counties'>
+
   <!--Search bar header button-->
   <ion-nav-buttons side="primary">
     <button ng-click="openPopover($event)" class="button icon ion-grid"></button>
@@ -11,7 +12,7 @@
   </ion-nav-buttons>
 
   <!--Content-->
-  <ion-content>
+  <ion-content scroll="false">
     <!--Search bar textbox-->
     <div class="bar bar-header item-input-inset" ng-if="searchBar == true">
       <label class="item-input-wrapper">
@@ -19,18 +20,21 @@
         <input type="search" placeholder="Search" ng-model="$parent.searchString" focus-me="searchBar">
       </label>
     </div>
+    </ion-content>
+
+  <ion-content>
 
     <ion-list can-swipe="true">
-      <ion-item ng-repeat="item in items | unique:'floodArea.county' | orderBy:'floodArea.county' | filter:{floodArea:{county:searchString}}"
+      <ion-item ng-repeat="item in items | unique:'floodArea.county' | orderBy:'floodArea.county' | filter:{floodArea:{county:$parent.searchString}}"
                 class="item item-text-wrap"
                 ng-click="showItem(item)">
         {{item.floodArea.county}}
         <i class="icon ion-chevron-right"></i>
-        <ion-option-button class="button-positive icon ion-pin"
+        <ion-option-button class="button-positive icon ion-eye"
                            ng-click="bookmarkCounty(item.floodArea.county)" ng-show="!isBookmarked(item.floodArea.county)">
         </ion-option-button>
-        <ion-option-button class="button-assertive icon ion-pin"
-                           ng-click="removeBookmark(item.floodArea.county)" ng-show="isBookmarked(item.floodArea.county)">
+        <ion-option-button class="button-assertive icon ion-eye-disabled"
+                           ng-click="removeBookmark(item.floodArea.county)" ng-show="isBookmarked(item.floodArea.county) != undefined">
         </ion-option-button>
       </ion-item>
     </ion-list>
